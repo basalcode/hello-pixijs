@@ -1,4 +1,4 @@
-import { Application, Container, Point, Sprite } from 'pixi.js'
+import { Application, Container, Sprite } from 'pixi.js'
 
 const app = new Application({
 	view: document.getElementById("pixi-canvas") as HTMLCanvasElement,
