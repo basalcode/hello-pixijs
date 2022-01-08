@@ -1,21 +1,38 @@
-import { Application, Container, Graphics, Sprite, TextStyle, Text } from 'pixi.js'
+import { Emitter } from 'pixi-particles';
+import { 
+	Application, 
+	Container, 
+	Graphics, 
+	Sprite, 
+	TextStyle, 
+	Text, 
+	BitmapFont, 
+	BitmapText, 
+	filters, 
+	ParticleContainer, 
+	Texture
+} from 'pixi.js'
+import * as particleSettings from "../static/emitter.json";
 
+/* app setting */
 const app = new Application({
 	view: document.getElementById("pixi-canvas") as HTMLCanvasElement,
 	resolution: window.devicePixelRatio || 1,
 	autoDensity: true,
 	backgroundColor: 0xFFFFFF,
-	width: 640,
-	height: 480
+	width: window.innerWidth,
+	height: window.innerHeight
 });
 
+/* container */
 const container: Container = new Container();
 container.x = 200;
 container.y = 0;
 
 app.stage.addChild(container);
 
-// prite to show bitmap image
+/* sprite */ 
+// shows bitmap image
 const clampy: Sprite = Sprite.from("clampy.png");
 
 clampy.x  = 100;
@@ -32,10 +49,13 @@ app.stage.addChild(bigContainer);
 const littleContainer: Container = new Container();
 bigContainer.addChild(littleContainer);
 
+/* particle container */
 // fast speed container
+// cannot have grand child
 // const particleContainer: ParticleContainer = new ParticleContainer();
 
-// support drawing 
+/* graphics */
+// support drawing feature
 const graphics: Graphics = new Graphics();
 
 graphics.beginFill(0xFF00FF);
@@ -49,7 +69,7 @@ graphics.x = 100;
 graphics.y = 100;
 
 
-// text
+/* text */
 const textStyle: TextStyle = new TextStyle({
 	align: "center",
 	fill: "#754c24",
@@ -60,3 +80,62 @@ const textObj: Text = new Text ('ㄱㄴㄷㄹ', textStyle);
 textObj.text = "This is expensive to change, please do not abuse";
 
 app.stage.addChild(textObj);
+
+/* bitmap text */
+BitmapFont.from("comic 32", {
+	fill: "#ffffff",
+	fontFamily: "Comic Sans MS",
+	fontSize: 32 
+});
+
+const bitmapText: BitmapText = new BitmapText("I love baking, my family, and my friends",
+	{
+		fontName: "comic 32",
+		fontSize: 32,
+		tint: 0xFF0000
+	}
+);
+
+bitmapText.text = "This is cheap";
+bitmapText.text = "Change it as much as you want";
+bitmapText.x = 0;
+bitmapText.y = 600;
+
+app.stage.addChild(bitmapText);
+
+/* filter */
+const blurFilter = new filters.BlurFilter();
+
+clampy.filters = [ blurFilter ];
+
+/* particle */
+const particleContainer = new ParticleContainer();
+app.stage.addChild(particleContainer);
+
+const emitter = new Emitter(particleContainer, Texture.from("particleTexture.png"), particleSettings);
+emitter.autoUpdate = true;
+emitter.updateSpawnPos(200, 100);
+emitter.emit = true;
+
+class A {
+	private myName: string = "I am A";
+	public method() {
+		console.log(this.myName);
+	};
+}
+
+class B {
+	private myName: string = "I am B";
+	public printName() {
+		console.log(this.myName);
+	}
+}
+
+const a = new A();
+const b = new B();
+a.method = b.printName;
+a.method();
+b.printName();
+
+a.method = b.printName.bind(b);
+a.method();
