@@ -13,6 +13,7 @@ import {
 	Texture
 } from 'pixi.js'
 import * as particleSettings from "../static/emitter.json";
+import { Scene } from './Scene';
 
 /* app setting */
 const app = new Application({
@@ -117,11 +118,10 @@ emitter.autoUpdate = true;
 emitter.updateSpawnPos(200, 100);
 emitter.emit = true;
 
+/* context */
 class A {
-	private myName: string = "I am A";
-	public method() {
-		console.log(this.myName);
-	};
+	// private myName: string = "I am A";
+	public method: Function = () => {};
 }
 
 class B {
@@ -139,3 +139,21 @@ b.printName();
 
 a.method = b.printName.bind(b);
 a.method();
+
+/* scene code spliting */
+const sceneApp = new Application({
+	view: document.getElementById('pixi-scene-canvas') as HTMLCanvasElement,
+	resolution: window.devicePixelRatio || 1,
+	autoDensity: true,
+	backgroundColor: 0x6495ed,
+	width: 640,
+	height: 480,
+});
+
+const scene: Scene = new Scene(sceneApp.screen.width, sceneApp.screen.height);
+app.stage.addChild(scene);
+
+scene.x = 0;
+scene.y = 600;
+
+
