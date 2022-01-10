@@ -155,5 +155,3 @@ app.stage.addChild(scene);
 
 scene.x = 0;
 scene.y = 600;
-
-
