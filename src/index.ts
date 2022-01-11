@@ -10,7 +10,9 @@ import {
 	BitmapText, 
 	filters, 
 	ParticleContainer, 
-	Texture
+	Texture,
+	// Circle,
+	// Point
 } from 'pixi.js'
 import * as particleSettings from "../static/emitter.json";
 import { Scene } from './Scene';
@@ -68,7 +70,6 @@ app.stage.addChild(graphics);
 
 graphics.x = 100;
 graphics.y = 100;
-
 
 /* text */
 const textStyle: TextStyle = new TextStyle({
@@ -155,3 +156,49 @@ app.stage.addChild(scene);
 
 scene.x = 0;
 scene.y = 600;
+
+/* graphics */
+graphics.x = app.renderer.width / 2;
+graphics.y = app.renderer.height / 2;
+app.stage.addChild(graphics);
+
+graphics.lineStyle(5, 0x00ff00);
+graphics.beginFill(0xff0000);
+// graphics.drawCircle(0, 0, 100);
+
+// graphics.drawRect(0, 0, 100, 200);
+
+// graphics.drawStar(0, 0, 5, 100, 40);
+// graphics.closePath();
+
+// graphics.drawShape(new Circle(0, 0, 10));
+
+// graphics.drawPolygon([new Point(100, 100), new Point(100, 200), new Point(200, 100)]);
+
+
+
+// graphics.moveTo(0, 0);
+// graphics.lineTo(100, 100);
+// graphics.lineTo(100, 200);
+// graphics.lineTo(0, 200);
+// graphics.bezierCurveTo(-200, 200, 200, 100, -100, 0);
+// graphics.quadraticCurveTo(-200, -100, -200, 0);
+
+let radius = 50;
+graphics.arc(0, 0, radius, 0, Math.PI * 2);
+
+app.ticker.add(animate);
+
+let delta = 0;
+function animate() {
+	delta += 0.1;
+	radius = 50 + Math.sin(delta) * 25;
+	
+	graphics.clear();
+	graphics.beginFill(0xff0000);
+	graphics.arc(0, 0, radius, 0, Math.PI * 2);
+	graphics.endFill();
+}
+
+graphics.endFill();
+
