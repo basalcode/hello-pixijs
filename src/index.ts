@@ -11,6 +11,7 @@ import {
 	filters, 
 	ParticleContainer, 
 	Texture,
+	autoDetectRenderer,
 	// Circle,
 	// Point
 } from 'pixi.js'
@@ -202,3 +203,71 @@ function animate() {
 
 graphics.endFill();
 
+
+/* bunny animation */
+let renderer = autoDetectRenderer({ width: 800, height: 600, backgroundColor : 0x1099bb});  
+document.body.appendChild(renderer.view);
+
+let stage = new Container();
+
+let bunnyTexture = Texture.from('bunny.png');  
+let carrotTexture = Texture.from('carrot.png');
+
+let bunny = new Sprite(bunnyTexture);
+
+bunny.anchor.x = 0.5;  
+bunny.anchor.y = 0.5;
+
+bunny.position.x = 200;  
+bunny.position.y = 150;
+
+let background = new Graphics();  
+background.beginFill(0x123456);  
+background.drawRect(0,0,800,600);  
+background.endFill();  
+stage.addChild(background);
+
+stage.addChild(bunny);
+
+stage.interactive = true;
+
+stage.on("mousedown", function(){  
+  shoot(bunny.rotation, {
+    x: bunny.position.x+Math.cos(bunny.rotation)*20,
+    y: bunny.position.y+Math.sin(bunny.rotation)*20
+  });
+})
+
+let carrotBullets: Sprite[] = [];  
+let bulletSpeed = 5;
+
+function shoot(rotation : number, startPosition: {x: number, y: number}){  
+  let bullet: Sprite = new Sprite(carrotTexture);
+  bullet.position.x = startPosition.x;
+  bullet.position.y = startPosition.y;
+  bullet.rotation = rotation;
+  stage.addChild(bullet);
+  carrotBullets.push(bullet);
+}
+
+function rotateToPoint(mx: number, my: number, px: number, py: number){  
+  let dist_Y = my - py;
+  let dist_X = mx - px;
+  let angle = Math.atan2(dist_Y,dist_X);
+  return angle;
+}
+
+// start animating
+animateBunny();  
+function animateBunny() {  
+  requestAnimationFrame(animateBunny);
+
+  bunny.rotation = rotateToPoint(renderer.plugins.interaction.mouse.global.x, renderer.plugins.interaction.mouse.global.y, bunny.position.x, bunny.position.y);
+
+  for(let b=carrotBullets.length-1;b>=0;b--){
+    carrotBullets[b].position.x += Math.cos(carrotBullets[b].rotation)*bulletSpeed;
+    carrotBullets[b].position.y += Math.sin(carrotBullets[b].rotation)*bulletSpeed;
+  }
+  // render the container
+  renderer.render(stage);
+}
